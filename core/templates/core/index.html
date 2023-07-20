@@ -1,0 +1,158 @@
+{% extends "navbar.html" %}
+{% load static %}
+{% block content %}
+    <section class="section profile">
+     <div class="row justify-content-center">
+        <div class="col-xl-10">
+          <div class="row mt-3 text-center">
+          
+            <div x-data="{ url: true, vcard: false, wifi: false, 
+            toggle(type) { 
+                console.log(type)
+                this.vcard = false;
+                this.wifi = false;
+                this.url = false;
+                if (type == 'url'){ this.url = true; }
+                else if (type == 'wifi') { this.wifi = true; }
+                else if (type == 'vcard') { this.vcard = true; }
+            },
+            clear(){
+                document.getElementById('url_form').reset();
+                document.getElementById('vcard_form').reset();
+                document.getElementById('wifi_form').reset();
+            } }">
+    <h2>QR Code Generator</h2>
+    <hr>
+    <div class="mx-auto col col-lg-8 col-md-8 col-sm-12 btn-group" style="display: inline-block " role="group" aria-label="Basic radio toggle button group">
+                
+                    <input class="btn-check" type="radio" name="qr_option" id="url" value="url" checked autocomplete="off">
+                    <label class="btn btn-outline-primary " for="url" @click="toggle('url')">
+                        URL
+                    </label>
+                    
+                
+               
+                    <input class="btn-check" type="radio" name="qr_option" id="vcard" value="vcard" autocomplete="off" >
+                    <label class="btn btn-outline-primary" for="vcard" @click="toggle('vcard')">
+                        vCard
+                    </label>
+                    
+                
+                
+                    <input class="btn-check" type="radio" name="qr_option" id="wifi" value="wifi" autocomplete="off">
+                    <label class="btn btn-outline-primary" for="wifi" @click="toggle('wifi')">
+                        WiFi
+                    </label>
+                    
+                
+                <div class="mt-2 form-outline form-check-inline  ">
+                    <button type="button" class="btn btn-danger" @click="clear()">Clear Data</button>
+                </div>
+    </div>
+    
+    <div x-cloak x-show="url">
+        <br>
+        <p>Enter URL below to generate a QR Code.</p>
+        <form id='url_form' hx-post="{% url 'qr_code:generate_qrcode' %}"  hx-target="#qr_code" hx-trigger="submit"  >
+            {% csrf_token %}
+            <div class="form-outline mx-auto  col col-lg-4 col-md-8 col-sm-12">
+                <input type="url" id="url" name="url" class="form-control" placeholder="Enter URL..." autofocus/>
+                
+            </div>
+            <br>
+            <div class="d-grid mx-auto col col-lg-4 col-sm-12 col-md-8">
+            
+            <button type="submit" class="btn btn-primary btn-block mb-4">Generate</button>
+            </div>
+            <div id="qr_code" class="mt-10 mx-auto col col-lg-4 col-sm-12 col-md-8"  hx-swap="outerHTML swap:1s">
+        
+            </div>
+        </form>
+    </div>
+    <div x-cloak x-show="vcard">
+        <br>
+        <p>Enter contact information to generate a vCard QR code.</p>
+        <form id='vcard_form' hx-post="{% url 'qr_code:generate_qrcode_vcard' %}"  hx-target="#qr_code_vcard" hx-trigger="submit"  >
+            {% csrf_token %}
+            <div class="form-outline mx-auto  col col-lg-4 col-md-8 col-sm-12">
+                <input type="text" id="first_name" name="first_name" class="form-control" placeholder="First Name" autofocus/>
+                <br>
+                <input type="text" id="last_name" name="last_name" class="form-control" placeholder="Last Name" />
+            </div>
+            <br>
+            <div class="form-outline mx-auto  col col-lg-4 col-md-8 col-sm-12">
+                <input type="email" id="email_address" name="email_address" class="form-control" placeholder="Email Address" autofocus/>
+                
+            </div>
+            <br>
+            <div class="form-outline mx-auto  col col-lg-4 col-md-8 col-sm-12">
+                <input type="tel" id="phone" name="phone" class="form-control" placeholder="Phone Number" autofocus/>
+                
+            </div>
+            <br>
+            <div class="d-grid mx-auto col col-lg-4 col-sm-12 col-md-8">
+            
+            <button type="submit" class="btn btn-primary btn-block mb-4">Generate</button>
+            </div>
+            <div id="qr_code_vcard" class="mt-10 mx-auto col col-lg-4 col-sm-12 col-md-8"  hx-swap="outerHTML swap:1s">
+        
+            </div>
+        </form>
+    </div>
+    <div x-cloak x-show="wifi">
+         <br>
+        <p>Enter Wifi information.</p>
+        <form  id='wifi_form' hx-post="{% url 'qr_code:generate_qrcode_wifi' %}"  hx-target="#qr_code_wifi" hx-trigger="submit"  >
+            {% csrf_token %}
+            <div class="form-outline mx-auto  col col-lg-4 col-md-8 col-sm-12">
+                <input type="text" id="ssid" name="ssid" class="form-control" placeholder="SSID" autofocus/>
+            </div>
+            <br>
+            <div class="form-outline mx-auto  col col-lg-4 col-md-8 col-sm-12">
+                <input type="password" id="password" name="password" class="form-control" placeholder="Password"/>
+                
+            </div>
+            <br>
+            <div class="mx-auto col col-lg-4 col-md-8 col-sm-12">
+                <div class="form-outline form-check-inline  ">
+                    <input class="form-check-input" type="radio" name="security_method" id="WPA" value="WPA" checked>
+                    <label class="form-check-label" for="WPA">
+                        WPA
+                    </label>
+                    
+                </div>
+                <div class="form-outline form-check-inline  ">
+                    <input class="form-check-input" type="radio" name="security_method" id="WEP" value="WEP">
+                    <label class="form-check-label" for="WEP">
+                        WEP
+                    </label>
+                    
+                </div>
+                <div class="form-outline form-check-inline   ">
+                    <input class="form-check-input" type="radio" name="security_method" id="BLANK" value="blank">
+                    <label class="form-check-label" for="BLANK">
+                        None
+                    </label>
+                    
+                </div>
+            </div>
+            <br>
+            <div class="d-grid mx-auto col col-lg-4 col-sm-12 col-md-8">
+            
+            <button type="submit" class="btn btn-primary btn-block mb-4">Generate</button>
+            </div>
+            <div id="qr_code_wifi" class="mt-10 mx-auto col col-lg-4 col-sm-12 col-md-8"  hx-swap="outerHTML swap:1s">
+        
+        </div>
+        </form>
+    </div>
+   
+</div>
+          </div>
+        
+       
+        </div>
+
+      </div>
+    </secton>
+{% endblock %}

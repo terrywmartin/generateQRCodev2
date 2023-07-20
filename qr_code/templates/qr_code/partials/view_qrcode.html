@@ -1,0 +1,3 @@
+ {{ qrcode|safe }}
+<br>
+<a class="btn btn-primary btn-block mb-4" href="{% url 'qr_code:download_qrcode' %}?type={{type}}&{% if type == 'url' %}url={{url}} {% elif type == 'vcard' %}first_name={{first_name}}&last_name={{last_name}}&email_address={{email_address}}&phone={{phone}} {% elif type == 'wifi' %}ssid={{ssid}}&password={{password}}&security_method={{security_method}} {% endif %}" download >Download</a>
